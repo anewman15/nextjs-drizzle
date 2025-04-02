@@ -1,24 +1,48 @@
-'use client';
+"use client";
 
-import { CustomerField, InvoiceForm } from '@/app/lib/definitions';
+import { ReactNode } from 'react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import {
   CheckIcon,
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
-import Link from 'next/link';
 import { Button } from '@/app/ui/button';
+import { CustomerField, Invoice, SchemaInvoice } from '@/app/lib/zod-types';
 
 export default function EditInvoiceForm({
   invoice,
   customers,
 }: {
-  invoice: InvoiceForm;
+  invoice: Invoice;
   customers: CustomerField[];
 }) {
+
+  const defaultValues: Invoice = {
+    ...invoice,
+  };
+
+  const { formState: { errors }, register, handleSubmit } = useForm({
+    resolver: zodResolver(SchemaInvoice),
+    defaultValues,
+
+    mode: "onChange",
+    criteriaMode: "all",
+    shouldFocusError: true,
+    reValidateMode: "onChange"
+  });
+
+  const updateCurrentInvoice: SubmitHandler<Invoice> = async (formData) => {
+    redirect("/dashboard/invoices");
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit(updateCurrentInvoice)}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -28,9 +52,9 @@ export default function EditInvoiceForm({
           <div className="relative">
             <select
               id="customer"
-              name="customerId"
+              {...register("customer_id")}
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={invoice.customer_id}
+              defaultValue={invoice.customer_id as string}
             >
               <option value="" disabled>
                 Select a customer
@@ -42,6 +66,11 @@ export default function EditInvoiceForm({
               ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            {
+              errors?.customer_id && (
+                <span className="text-red-500 text-xs">{errors.customer_id.message as ReactNode}</span>
+              )
+            }
           </div>
         </div>
 
@@ -54,14 +83,18 @@ export default function EditInvoiceForm({
             <div className="relative">
               <input
                 id="amount"
-                name="amount"
+                {...register("amount", { valueAsNumber: true })}
                 type="number"
                 step="0.01"
-                defaultValue={invoice.amount}
                 placeholder="Enter USD amount"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              {
+                errors?.amount && (
+                  <span className="text-red-500 text-xs">{errors.amount.message as ReactNode}</span>
+                )
+              }
             </div>
           </div>
         </div>
@@ -76,7 +109,7 @@ export default function EditInvoiceForm({
               <div className="flex items-center">
                 <input
                   id="pending"
-                  name="status"
+                  {...register("status")}
                   type="radio"
                   value="pending"
                   defaultChecked={invoice.status === 'pending'}
@@ -92,7 +125,7 @@ export default function EditInvoiceForm({
               <div className="flex items-center">
                 <input
                   id="paid"
-                  name="status"
+                  {...register("status")}
                   type="radio"
                   value="paid"
                   defaultChecked={invoice.status === 'paid'}
@@ -106,6 +139,11 @@ export default function EditInvoiceForm({
                 </label>
               </div>
             </div>
+             {
+                errors?.status && (
+                  <span className="text-red-500 text-xs">{errors.status.message as ReactNode}</span>
+                )
+              }
           </div>
         </fieldset>
       </div>
@@ -116,8 +154,8 @@ export default function EditInvoiceForm({
         >
           Cancel
         </Link>
-        <Button type="submit">Edit Invoice</Button>
+        <Button type="submit">Save</Button>
       </div>
     </form>
   );
-}
+};
