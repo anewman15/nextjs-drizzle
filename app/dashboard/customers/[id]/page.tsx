@@ -7,7 +7,7 @@ import Breadcrumbs from "@/app/ui/invoices/breadcrumbs";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import CustomerInvoicesTable from "@/app/ui/customers/customer-invoices-table";
 import { mockCustomerById, mockPendingCustomerInvoices } from "@/app/lib/mock.data";
-import { Customer, InvoicesTable } from "@/app/lib/definitions";
+import { Customer, Invoice } from "@/app/lib/zod-types";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -15,7 +15,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
   const customerById = mockCustomerById;
 
-  const customerInvoices = customerById?.invoices as InvoicesTable[];
+  const customerInvoices = customerById?.invoices as Invoice[];
 
   const pendingCustomerInvoices = mockPendingCustomerInvoices;
 
@@ -59,7 +59,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 customerInvoices?.length > 0 ? (
                   <CustomerInvoicesTable
                     customer={customerById as Customer}
-                    invoicesList={pendingCustomerInvoices as InvoicesTable[]}
+                    invoicesList={pendingCustomerInvoices as Invoice[]}
                   />
                 ) : (
                   <p
