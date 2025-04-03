@@ -3,7 +3,10 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "db:drizzle-generate": "npx drizzle-kit generate",
+    "db:drizzle-migrate": "npx drizzle-kit migrate",
+    "db:drizzle-seed": "tsx ./app/db/seed.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
