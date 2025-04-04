@@ -12,8 +12,9 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { CustomerField, NewInvoice, SchemaNewInvoice } from '@/app/lib/zod-types';
-
+import { NewInvoice, SchemaNewInvoice } from '@/app/db/schema/invoices.schema';
+import { CustomerField } from '@/app/db/schema/customers.schema';
+import { createInvoice } from '@/app/lib/actions';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
 
@@ -35,6 +36,8 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
   });
 
   const createNewInvoice: SubmitHandler<NewInvoice> = async (data) => {
+    await createInvoice(data);
+
     redirect("/dashboard/invoices");
   };
 
