@@ -31,7 +31,7 @@ export const SchemaNewInvoice = createInsertSchema(invoices, {
     schema
       .positive({ message: "Invoice amount must be positive" })
       .min(1, { message: "Minimum amount must be 1$" }),
-  status: (schema) => schema.default("pending"),
+  status: zod.enum(["paid", "pending"]),
   customer_id: (schema) => schema.uuid({ message: "Please choose a customer" }),
 }).omit({
   id: true,
@@ -44,7 +44,7 @@ export const SchemaInvoiceEdit = createInsertSchema(invoices, {
     schema
       .positive({ message: "Invoice amount must be positive" })
       .min(1, { message: "Minimum amount must be 1$" }),
-  status: (schema) => schema.default("pending"),
+  status: zod.enum(["paid", "pending"]),
   customer_id: (schema) =>
     schema.uuid({ message: "Please choose a customer " }),
 });
