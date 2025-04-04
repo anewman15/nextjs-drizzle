@@ -1,19 +1,20 @@
 "use client";
 
-import { ReactNode } from 'react';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-
 import {
   CheckIcon,
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 import { Button } from '@/app/ui/button';
-import { CustomerField, Invoice, SchemaInvoice } from '@/app/lib/zod-types';
+import { Invoice, SchemaInvoiceEdit } from '@/app/db/schema/invoices.schema';
+import { CustomerField } from '@/app/db/schema/customers.schema';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ReactNode } from 'react';
+import { updateInvoice } from '@/app/lib/actions';
+import { redirect } from 'next/navigation';
 
 export default function EditInvoiceForm({
   invoice,
@@ -28,8 +29,9 @@ export default function EditInvoiceForm({
   };
 
   const { formState: { errors }, register, handleSubmit } = useForm({
-    resolver: zodResolver(SchemaInvoice),
+    resolver: zodResolver(SchemaInvoiceEdit),
     defaultValues,
+
 
     mode: "onChange",
     criteriaMode: "all",
@@ -38,6 +40,9 @@ export default function EditInvoiceForm({
   });
 
   const updateCurrentInvoice: SubmitHandler<Invoice> = async (formData) => {
+    // highlight-next-line
+    await updateInvoice(formData);
+
     redirect("/dashboard/invoices");
   };
 
@@ -139,11 +144,11 @@ export default function EditInvoiceForm({
                 </label>
               </div>
             </div>
-             {
-                errors?.status && (
-                  <span className="text-red-500 text-xs">{errors.status.message as ReactNode}</span>
-                )
-              }
+            {
+              errors?.status && (
+                <span className="text-red-500 text-xs">{errors.status.message as ReactNode}</span>
+              )
+            }
           </div>
         </fieldset>
       </div>
