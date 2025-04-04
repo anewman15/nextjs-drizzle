@@ -65,7 +65,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       <hr className="my-1" />
       <div className="my-6">
         <div>
-          <h2 className="text-xl">{customerInvoices?.length} Pending Invoices</h2>
+          <h2 className="text-xl">{pendingCustomerInvoices?.length} Pending Invoices</h2>
           <div className="my-0">
             <Suspense fallback={<InvoicesTableSkeleton />}>
               {
