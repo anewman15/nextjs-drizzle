@@ -1,18 +1,21 @@
 "use client"
 
-import { ReactNode } from "react";
-import { redirect } from "next/navigation";
-import Link from "next/link";
+import { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   EnvelopeIcon,
   UserCircleIcon,
-} from "@heroicons/react/24/outline";
-import { Button } from "@/app/ui/button";
-import { Customer, SchemaCustomer } from "@/app/lib/zod-types";
+} from '@heroicons/react/24/outline';
+import { Button } from '@/app/ui/button';
+// highlight-start
+import { updateCustomer } from '@/app/lib/actions';
+import { Customer, SchemaCustomer } from '@/app/db/schema/customers.schema';
+// highlight-end
 
-export default function EditCustomerForm({ customer }: { customer: Customer }) {
+export default function CreateCustomerForm({ customer }: { customer: Customer }) {
   const defaultValues: Customer = {
     ...customer,
   };
@@ -28,6 +31,9 @@ export default function EditCustomerForm({ customer }: { customer: Customer }) {
   });
 
   const updateCurrentCustomer: SubmitHandler<Customer> = async (data) => {
+    // highlight-start
+    await updateCustomer(data);
+
     redirect("/dashboard/customers");
   };
 
@@ -46,7 +52,7 @@ export default function EditCustomerForm({ customer }: { customer: Customer }) {
                 id="name"
                 {...register("name")}
                 type="text"
-                placeholder="Enter your name"
+                placeholder="Enter you name"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
               <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -68,7 +74,7 @@ export default function EditCustomerForm({ customer }: { customer: Customer }) {
                 id="email"
                 {...register("email")}
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter you email"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
               <EnvelopeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
