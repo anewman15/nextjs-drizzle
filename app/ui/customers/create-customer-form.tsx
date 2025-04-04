@@ -1,17 +1,20 @@
 "use client"
 
-import { ReactNode } from "react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { ReactNode } from 'react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   EnvelopeIcon,
   UserCircleIcon,
-} from "@heroicons/react/24/outline";
+} from '@heroicons/react/24/outline';
 
-import { Button } from "@/app/ui/button";
-import { NewCustomer, SchemaNewCustomer } from "@/app/lib/zod-types";
+import { Button } from '@/app/ui/button';
+// highlight-start
+import { createCustomer } from '@/app/lib/actions';
+import { NewCustomer, SchemaNewCustomer } from '@/app/db/schema/customers.schema';
+// highlight-end
 
 export default function CreateCustomerForm() {
 
@@ -31,6 +34,9 @@ export default function CreateCustomerForm() {
   });
 
   const createNewCustomer: SubmitHandler<NewCustomer> = async (data) => {
+    // highlight-next-line
+    await createCustomer(data);
+
     redirect("/dashboard/customers");
   };
 
