@@ -13,6 +13,18 @@ export const customers = pgTable("customers", {
 
 export const SchemaCustomer = createSelectSchema(customers);
 export const SchemaCustomerList = zod.array(SchemaCustomer);
+export const SchemaCustomerEdit = createInsertSchema(customers, {
+  id: (schema) => schema.uuid().nonempty(),
+  name: (schema) =>
+    schema
+      .min(1, { message: "Name cannot be empty" })
+      .max(55, { message: "Name should not exceed 55 characters" }),
+  email: (schema) =>
+    schema
+      .email({ message: "Enter a valid email" })
+      .nonempty("Please enter your email"),
+  image_url: (schema) => schema.optional(),
+});
 export const SchemaNewCustomer = createInsertSchema(customers, {
   name: (schema) =>
     schema
@@ -28,5 +40,6 @@ export const SchemaNewCustomer = createInsertSchema(customers, {
 });
 
 export type Customer = zod.infer<typeof SchemaCustomer>;
+export type CustomerEdit = zod.infer<typeof SchemaCustomerEdit>;
 export type NewCustomer = zod.infer<typeof SchemaNewCustomer>;
 export type CustomerField = Pick<Customer, "id" | "name">;
